@@ -3,7 +3,7 @@ import pandas as pd
 from pandas.core import base 
 import requests 
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse
 import os 
 import datetime
 from requests.models import PreparedRequest
@@ -79,7 +79,6 @@ class Crawler:
 	def get_monthly_report(self, start_date: str, end_date: str) -> None:
 		url = self.base_report_url
 		date_range_list = self._generate_date_inclusive(start_date, end_date)
-		req = PreparedRequest()
 		count = 0
 		for date in date_range_list:
 			count += 1
@@ -87,15 +86,34 @@ class Crawler:
 				print("sleep: ", count)
 				time.sleep(10)
 			params = {'reportdate': date}
-			req.prepare_url(url, params)
-			print('\n\nstart processing for date: ', date)
-			self.get_montly_report_by_url(url=req.url)
-			print(req.url)
+			new_url = self._add_params_url(url, params)
+			print('\n\nstart processing for date: ', date, 'url: ', new_url)
+			self.get_montly_report_by_url(url=new_url)
 			print('Done for date: ', date)
+		# note already crawl link 
+		with open('./already_crawl_month_data.txt', 'a') as f:
+			f.write(url)
+			f.write('\n')
+	
+	def _add_params_url(self, url: str, params: dict) -> str:
+		parsed_url = urlparse(url)
+		query = dict(parse_qsl(parsed_url.query))
+		query.update(params)
+		new_query = urlencode(query)
+		new = parsed_url._replace(query=new_query)
+		newUrl = urlunparse(new)
+		return newUrl
 
 
 if __name__ == '__main__':
-	base_url = "https://trafficdata.tii.ie/tfmonthreport.asp?sgid=XzOA8m4lr27P0HaO3_srSB&spid=256365229484"
+	base_url = "https://trafficdata.tii.ie/tfmonthreport.asp?sgid=XzOA8m4lr27P0HaO3_srSB&spid=55f9e7ad6213"
 	crawl = Crawler(base_report_url=base_url)
-	res = crawl.get_monthly_report('2020-02-01', '2021-09-01')
+	# start = datetime.datetime.now()
+	# res = crawl.get_monthly_report('2020-02-01', '2021-09-01')
+	# period = datetime.datetime.now() - start
+	# print("total time: ", period)
 	# print(crawl._generate_date_inclusive('2020-02-01', '2021-09-01'))
+
+	params = {'reportdate': '2020-02-01'}
+	new_url = crawl._add_params_url(base_url, params)
+	print(new_url)
