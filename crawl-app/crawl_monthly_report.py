@@ -7,6 +7,8 @@ from urllib.parse import urlparse, parse_qs
 import os 
 import datetime
 from requests.models import PreparedRequest
+import time
+from dateutil.relativedelta import relativedelta
 
 
 class Crawler:
@@ -68,19 +70,22 @@ class Crawler:
 		DATETIME_FORMAT = "%Y-%m-%d"
 		start = datetime.datetime.strptime(start_date, DATETIME_FORMAT)
 		end = datetime.datetime.strptime(end_date, DATETIME_FORMAT)
-		print(f'end: {end}' )
-
 		i = start
 		while i <= end:
 			res.append(i.strftime(DATETIME_FORMAT))
-			i = i + datetime.timedelta(days=1)
+			i = i + relativedelta(months=1)
 		return res 
 
 	def get_monthly_report(self, start_date: str, end_date: str) -> None:
 		url = self.base_report_url
 		date_range_list = self._generate_date_inclusive(start_date, end_date)
 		req = PreparedRequest()
+		count = 0
 		for date in date_range_list:
+			count += 1
+			if count % 20 == 0:
+				print("sleep: ", count)
+				time.sleep(10)
 			params = {'reportdate': date}
 			req.prepare_url(url, params)
 			print('\n\nstart processing for date: ', date)
@@ -92,4 +97,5 @@ class Crawler:
 if __name__ == '__main__':
 	base_url = "https://trafficdata.tii.ie/tfmonthreport.asp?sgid=XzOA8m4lr27P0HaO3_srSB&spid=256365229484"
 	crawl = Crawler(base_report_url=base_url)
-	res = crawl.get_monthly_report('2021-09-01', '2021-09-03')
+	res = crawl.get_monthly_report('2020-02-01', '2021-09-01')
+	# print(crawl._generate_date_inclusive('2020-02-01', '2021-09-01'))
