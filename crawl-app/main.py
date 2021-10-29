@@ -27,6 +27,7 @@ class MainApp:
 		# actual craw. can do multiple thread here 
 		# list_crawl_site = list_crawl_site[:1] # for testing
 		print(list_crawl_site)
+		print(f'number link need to be crawl: {len(list_crawl_site)}' )
 		for crawl_site in list_crawl_site:
 			crawler = Crawler(crawl_site)
 			crawler.get_monthly_report(self.START_DATE, self.END_DATE)
