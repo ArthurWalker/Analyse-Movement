@@ -25,7 +25,7 @@ class MainApp:
 					print('already exists')
 		
 		# actual craw. can do multiple thread here 
-		list_crawl_site = list_crawl_site[:1] # for testing
+		# list_crawl_site = list_crawl_site[:1] # for testing
 		print(list_crawl_site)
 		for crawl_site in list_crawl_site:
 			crawler = Crawler(crawl_site)
