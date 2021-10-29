@@ -1,5 +1,5 @@
 from urllib.parse import urlparse, parse_qsl, urlunparse, urlencode, parse_qs
-
+import os
 
 import validators
 from bs4 import BeautifulSoup
@@ -29,10 +29,17 @@ class CrawlSiteLink:
 
 		# ensure no duplicate link
 		res = list(set(res))
-		with open('./list-url.txt', 'w') as f:
-			for i in res:
-				f.write(i)
-				f.write('\n')
+		res.sort()
+		part_nums = len(res) // 50 + 1 
+
+		if not os.path.exists('./list-url'):
+			os.makedirs("./list-url/")
+			
+		for part in range(part_nums):
+			with open(f'./list-url/{part}.txt', 'w') as f:
+				for i in res[part*50: (part+1)*50]:
+					f.write(i)
+					f.write('\n')
 
 if __name__ == '__main__':
 	crawl = CrawlSiteLink()
