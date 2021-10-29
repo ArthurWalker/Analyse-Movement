@@ -3,7 +3,7 @@ from crawl_monthly_report import Crawler
 class MainApp:
 	def __init__(self) -> None:
 		self.already_crawl_file = './already_crawl_month_data.txt'
-		self.crawl_site_file = './list-url.txt'
+		self.crawl_site_file = './list-url/3.txt'
 		self.START_DATE = '2020-02-01'
 		self.END_DATE = '2021-09-01'
 	
@@ -35,5 +35,5 @@ class MainApp:
 if __name__ == '__main__':
 	app = MainApp()
 	print('app running')
-	app.run()
+	# app.run()
 	
