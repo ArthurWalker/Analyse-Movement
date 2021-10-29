@@ -1,3 +1,4 @@
+import random
 from typing import List
 import pandas as pd
 from pandas.core import base 
@@ -81,10 +82,12 @@ class Crawler:
 		date_range_list = self._generate_date_inclusive(start_date, end_date)
 		count = 0
 		for date in date_range_list:
+			# slow request
+			time.sleep(random.randint(10,60))
 			count += 1
 			if count % 20 == 0:
 				print("sleep: ", count)
-				time.sleep(10)
+				time.sleep(60,180)
 			params = {'reportdate': date}
 			new_url = self._add_params_url(url, params)
 			print('\n\nstart processing for date: ', date, 'url: ', new_url)
