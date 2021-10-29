@@ -87,7 +87,7 @@ class Crawler:
 			count += 1
 			if count % 20 == 0:
 				print("sleep: ", count)
-				time.sleep(random.randin(60,180))
+				time.sleep(random.randint(60,180))
 			params = {'reportdate': date}
 			new_url = self._add_params_url(url, params)
 			print('\n\nstart processing for date: ', date, 'url: ', new_url)
