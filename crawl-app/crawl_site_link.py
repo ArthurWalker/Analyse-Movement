@@ -5,6 +5,8 @@ import validators
 from bs4 import BeautifulSoup
 import requests
 
+from logging_config import logger
+
 class CrawlSiteLink:
 	def __init__(self) -> None:
 		self.url = "https://trafficdata.tii.ie/tfmonthreport.asp?sgid=XzOA8m4lr27P0HaO3_srSB&spid=256365229484"

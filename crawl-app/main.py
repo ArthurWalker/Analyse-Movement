@@ -1,4 +1,7 @@
 from crawl_monthly_report import Crawler
+from logging_config import logger 
+from helper import Helper
+
 
 class MainApp:
 	def __init__(self) -> None:
@@ -6,6 +9,8 @@ class MainApp:
 		self.crawl_site_file = './list-url/3.txt'
 		self.START_DATE = '2020-02-01'
 		self.END_DATE = '2021-09-01'
+
+		Helper.init()
 	
 	def run(self):
 		# load data from already_crawl file. 
@@ -21,19 +26,17 @@ class MainApp:
 				tmp = tmp.strip()
 				if tmp not in already_crawl_set:
 					list_crawl_site.append(tmp)
-				else:
-					print('already exists')
+				
 		
 		# actual craw. can do multiple thread here 
 		# list_crawl_site = list_crawl_site[:1] # for testing
-		print(list_crawl_site)
-		print(f'number link need to be crawl: {len(list_crawl_site)}' )
+		logger.info(f'number link need to be crawl: {len(list_crawl_site)}' )
 		for crawl_site in list_crawl_site:
 			crawler = Crawler(crawl_site)
-			crawler.get_monthly_report(self.START_DATE, self.END_DATE)
+			# crawler.get_monthly_report(self.START_DATE, self.END_DATE)
 
 if __name__ == '__main__':
 	app = MainApp()
-	print('app running')
-	# app.run()
+	logger.info('app running')
+	app.run()
 	

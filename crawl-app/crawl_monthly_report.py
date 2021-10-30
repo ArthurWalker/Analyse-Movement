@@ -1,3 +1,4 @@
+from logging import log
 import random
 from typing import List
 import pandas as pd
@@ -12,16 +13,22 @@ import time
 from dateutil.relativedelta import relativedelta
 
 
+from logging_config import logger
+
 class Crawler:
 	def __init__(self, base_report_url: str) -> None:
 		self.SAVE_FOLDER = os.path.join(os.getcwd(), "craw_data")
 		self.base_report_url = base_report_url
 
 	def _get_siteId(self, soup: BeautifulSoup) -> str:
-		siteId_ele = soup.select('div#content #subtitlebar span')[1]
-		siteId_text = siteId_ele.text.split(":")[1].strip()
-		siteId_text = str(int(siteId_text))
-		return siteId_text
+		try:
+			siteId_ele = soup.select('div#content #subtitlebar span')[1]
+			siteId_text = siteId_ele.text.split(":")[1].strip()
+			siteId_text = str(int(siteId_text))
+			return siteId_text
+		except Exception as e:
+			logger.exception(e)
+			logger.error('soup content: ', soup.prettify())
 	
 	def _get_monthly_data(self, soup: BeautifulSoup) -> pd.DataFrame:
 		list_tr_element = soup.select("table#gridTable tr")
@@ -63,7 +70,7 @@ class Crawler:
 		outfile_folfer = os.path.join(self.SAVE_FOLDER, report_date)
 		if not os.path.exists(outfile_folfer):
 			os.makedirs(outfile_folfer)
-		print(f'output folder: {outfile_folfer}')
+		logger.info(f'output folder: {outfile_folfer}')
 		df.to_csv(os.path.join(outfile_folfer, siteId_text + ".csv"))
 
 	def _generate_date_inclusive(self, start_date: str, end_date:str) -> List[str]:
@@ -83,16 +90,16 @@ class Crawler:
 		count = 0
 		for date in date_range_list:
 			# slow request
-			time.sleep(random.randint(10,60))
+			time.sleep(random.randint(30,70))
 			count += 1
-			if count % 20 == 0:
-				print("sleep: ", count)
-				time.sleep(random.randint(60,180))
+			if count % 23 == 0:
+				logger.info("sleep: ")
+				time.sleep(random.randint(120,300))
 			params = {'reportdate': date}
 			new_url = self._add_params_url(url, params)
-			print('\n\nstart processing for date: ', date, 'url: ', new_url)
+			logger.info('\nstart processing for date: ', date, 'url: ', new_url)
 			self.get_montly_report_by_url(url=new_url)
-			print('Done for date: ', date)
+			logger.info('Done for date: ', date)
 		# note already crawl link 
 		with open('./already_crawl_month_data.txt', 'a') as f:
 			f.write(url)
