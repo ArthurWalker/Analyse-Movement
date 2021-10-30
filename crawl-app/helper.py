@@ -17,7 +17,7 @@ class Helper:
 
 	@staticmethod
 	def random_user_agent():
-		index =  random.randint(0, len(Helper.user_agents))
+		index =  random.randint(0, len(Helper.user_agents)-1)
 		user_agent = Helper.user_agents[index]
 		return user_agent
 	
