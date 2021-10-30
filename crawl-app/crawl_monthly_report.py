@@ -3,7 +3,6 @@ import random
 from typing import List
 import pandas as pd
 from pandas.core import base 
-import requests 
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, parse_qsl, urlencode, urlunparse
 import os 
@@ -11,6 +10,7 @@ import datetime
 from requests.models import PreparedRequest
 import time
 from dateutil.relativedelta import relativedelta
+from helper import Helper 
 
 
 from logging_config import logger
@@ -29,6 +29,8 @@ class Crawler:
 		except Exception as e:
 			logger.exception(e)
 			logger.error(f'soup content: {soup.prettify()}')
+		
+		return None
 	
 	def _get_monthly_data(self, soup: BeautifulSoup) -> pd.DataFrame:
 		list_tr_element = soup.select("table#gridTable tr")
@@ -61,10 +63,13 @@ class Crawler:
 		parsed_url = urlparse(url)
 		query = parse_qs(parsed_url.query)
 		report_date = query['reportdate'][0]
-		document = requests.get(url, timeout=30)
+		document = Helper.request_get(url)
 		html_doc = document.content
 		soup = BeautifulSoup(html_doc, 'html.parser')
 		siteId_text = self._get_siteId(soup)
+		if not siteId_text:
+			logger.error(f'Cannot get content of site')
+			return
 		df = self._get_monthly_data(soup)
 		# save it to csv file 
 		outfile_folfer = os.path.join(self.SAVE_FOLDER, report_date)

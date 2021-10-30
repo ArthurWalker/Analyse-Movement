@@ -40,3 +40,4 @@ if __name__ == '__main__':
 	Helper.init()
 	url = 'https://trafficdata.tii.ie/tfdayreport.asp?sgid=XzOA8m4lr27P0HaO3_srSB&spid=4E30484E302E&reportdate=2020-12-30&enddate=2020-12-30&intval=2'
 	Helper.request_get(url)
+	Helper.request_get(url)
