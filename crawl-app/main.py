@@ -6,7 +6,7 @@ from helper import Helper
 class MainApp:
 	def __init__(self) -> None:
 		self.already_crawl_file = './already_crawl_month_data.txt'
-		self.crawl_site_file = './list-url/3.txt'
+		self.crawl_site_file = './list-url/7.txt'
 		self.START_DATE = '2020-02-01'
 		self.END_DATE = '2021-09-01'
 
@@ -33,7 +33,7 @@ class MainApp:
 		logger.info(f'number link need to be crawl: {len(list_crawl_site)}' )
 		for crawl_site in list_crawl_site:
 			crawler = Crawler(crawl_site)
-			# crawler.get_monthly_report(self.START_DATE, self.END_DATE)
+			crawler.get_monthly_report(self.START_DATE, self.END_DATE)
 
 if __name__ == '__main__':
 	app = MainApp()

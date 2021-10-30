@@ -28,7 +28,7 @@ class Crawler:
 			return siteId_text
 		except Exception as e:
 			logger.exception(e)
-			logger.error('soup content: ', soup.prettify())
+			logger.error(f'soup content: {soup.prettify()}')
 	
 	def _get_monthly_data(self, soup: BeautifulSoup) -> pd.DataFrame:
 		list_tr_element = soup.select("table#gridTable tr")
@@ -70,7 +70,7 @@ class Crawler:
 		outfile_folfer = os.path.join(self.SAVE_FOLDER, report_date)
 		if not os.path.exists(outfile_folfer):
 			os.makedirs(outfile_folfer)
-		logger.info(f'output folder: {outfile_folfer}')
+		# logger.info(f'output folder: {outfile_folfer}')
 		df.to_csv(os.path.join(outfile_folfer, siteId_text + ".csv"))
 
 	def _generate_date_inclusive(self, start_date: str, end_date:str) -> List[str]:
@@ -97,9 +97,9 @@ class Crawler:
 				time.sleep(random.randint(120,300))
 			params = {'reportdate': date}
 			new_url = self._add_params_url(url, params)
-			logger.info('\nstart processing for date: ', date, 'url: ', new_url)
+			logger.info(f'start processing for date: {date}, url: {new_url}')
 			self.get_montly_report_by_url(url=new_url)
-			logger.info('Done for date: ', date)
+			logger.info(f'Done for date: {date}\n\n')
 		# note already crawl link 
 		with open('./already_crawl_month_data.txt', 'a') as f:
 			f.write(url)
