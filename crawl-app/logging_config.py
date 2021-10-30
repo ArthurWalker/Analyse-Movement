@@ -14,5 +14,5 @@ stream_hanlder.setLevel(logging.INFO)
 stream_hanlder.setFormatter(formater)
 
 logger.addHandler(file_handler)
-logger.addHandler(stream_hanlder)
+# logger.addHandler(stream_hanlder)
 logger.setLevel(logging.INFO)
