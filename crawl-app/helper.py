@@ -1,5 +1,6 @@
 import os 
-import random 
+import random
+import time 
 import config 
 import requests
 from logging_config import logger
@@ -27,10 +28,20 @@ class Helper:
 		headers = {
     		'User-Agent': user_agent,
 		}
-		try:
-			response =  requests.get(url, headers=headers, timeout=30)
-		except Exception as e:
-			logger.exception(e)
+		count = 0
+		response = None
+		while count < 3: 
+			try:
+				response =  requests.get(url, headers=headers, timeout=30)
+			except requests.exceptions.RequestException as e:
+				count += 1
+				rand = random.randint(60*20, 60*43)
+				rand = 5
+				logger.error(f'Connection timeout. sleep for {rand} s. Count: {count}')
+				time.sleep(rand)
+				logger.exception(e)
+
+
 		return response
 		
 	
